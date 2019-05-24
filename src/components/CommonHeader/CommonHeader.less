@@ -1,0 +1,114 @@
+.common-header {
+  height: 60px;
+  line-height: 60px;
+  box-shadow: 0 1px 3px rgba(26, 26, 26, 0.1);
+  .common-header-inner {
+    width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    user-select: none;
+    .blog-name {
+      font-size: 20px;
+      letter-spacing: 2px;
+    }
+    .nav {
+      flex: 2 1;
+      .nav-item {
+        color: #8590a6;
+        padding: 0 15px;
+        &:hover {
+          color: #175199;
+        }
+        &.active {
+          color: #444;
+        }
+      }
+    }
+    .userinfo {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      flex: 1 1;
+      .notice-ring {
+        position: relative;
+        color: #8590a6;
+        height: 60px;
+        margin-right: 40px;
+        .iconlingdang {
+          font-size: 24px;
+        }
+        .notice-num {
+          position: absolute;
+          bottom: 50%;
+          left: 50%;
+          padding: 0 4px;
+          line-height: 16px;
+          text-align: center;
+          font-size: 11px;
+          color: #fff;
+          background-color: #f1403c;
+          border: 2px solid #fff;
+          border-radius: 20px;
+        }
+      }
+      .header-profile {
+      }
+    }
+    .user-login-register {
+      display: flex;
+      justify-content: flex-end;
+      flex-direction: row;
+      .user-login,
+      .user-register {
+        padding: 0 5px;
+        color: #0084ff;
+        cursor: pointer;
+        &:active {
+          color: #1890ff;
+        }
+      }
+    }
+  }
+}
+.avatar-dropdown {
+  list-style: none;
+  text-align: left;
+  padding: 0;
+  margin: 0;
+  li {
+    padding: 0 20px;
+    height: 36px;
+    line-height: 36px;
+    color: #8590a6;
+    display: flex;
+    align-items: center;
+    &:hover {
+      background-color: #f6f6f6;
+      color: #76839b;
+    }
+    .iconuser-s {
+      font-size: 20px;
+    }
+    .icontuichu {
+    }
+    .iconuser-s,
+    .icontuichu {
+      display: inline-flex;
+      width: 26px;
+    }
+  }
+}
+.register-modal {
+  .ant-modal-content {
+    border-radius: 0;
+  }
+  .ant-modal-body {
+    padding-bottom: 0;
+  }
+  .ant-modal-footer {
+    text-align: center;
+    border-top: none;
+  }
+}
