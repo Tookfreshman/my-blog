@@ -1,9 +1,10 @@
 import './CommonHeader.less'
 import React, { Component } from 'react'
 import { NavLink } from 'react-router-dom'
-import { Popover, Modal, Input, Form } from 'antd'
-
-import { isValidUserName, isValidPassword } from '@/utils/validateReg.js'
+import { Popover, Modal } from 'antd'
+import { register, login } from '@/api/userControll'
+import { WrappedRegisterForm } from '../WrappedRegisterForm/WrappedRegisterForm'
+import WrappedLoginForm from '../WrappedLoginForm/WrappedLoginForm'
 
 const navContent = (
   <ul className="avatar-dropdown">
@@ -21,35 +22,63 @@ const navContent = (
     </NavLink>
   </ul>
 )
-export default class CommonHeader extends Component {
+class CommonHeader extends Component {
   constructor(props) {
     super(props)
     this.submitRegister = this.submitRegister.bind(this)
+    this.submitLogin = this.submitLogin.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.toggleRegisterAlert = this.toggleRegisterAlert.bind(this)
+    this.toggleLoginAlert = this.toggleLoginAlert.bind(this)
     this.state = {
       isLoggedIn: false,
       showLoginAlert: false,
       showRegisterAlert: false
     }
   }
+
   submitRegister() {
-    this.form.validForm()
-  }
-  handleSubmit(obj) {
-    console.log(obj)
+    this.registerForm.validForm()
   }
 
+  submitLogin() {
+    this.loginForm.validForm()
+  }
+
+  handleSubmit(obj) {
+    register(obj)
+      .then(res => {
+        if (res.code === '0') {
+          console.log(res)
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
+
+  toggleLoginAlert() {
+    const val = this.state.showLoginAlert
+    if (val) {
+      this.loginForm.props.form.resetFields()
+    }
+    this.setState({
+      showLoginAlert: !val
+    })
+  }
   toggleRegisterAlert() {
     const val = this.state.showRegisterAlert
     if (val) {
-      this.form.props.form.resetFields()
+      this.registerForm.props.form.resetFields()
     }
     this.setState({
       showRegisterAlert: !val
     })
   }
   render() {
+    console.log(this.props)
     const isLoggedIn = this.state.isLoggedIn
     return (
       <header className="common-header">
@@ -87,13 +116,29 @@ export default class CommonHeader extends Component {
             </div>
           ) : (
             <div className="user-login-register">
-              <div className="user-login">登录</div>
+              <div className="user-login" onClick={this.toggleLoginAlert}>
+                登录
+              </div>
               <div className="user-register" onClick={this.toggleRegisterAlert}>
                 注册
               </div>
             </div>
           )}
         </div>
+        <Modal
+          visible={this.state.showLoginAlert}
+          width={400}
+          mask={false}
+          wrapClassName="login-modal"
+          okText="登录"
+          cancelText="取消"
+          onOk={this.submitLogin}
+          onCancel={this.toggleLoginAlert}
+        >
+          <WrappedLoginForm
+            wrappedComponentRef={form => (this.loginForm = form)}
+          />
+        </Modal>
         <Modal
           visible={this.state.showRegisterAlert}
           closable={false}
@@ -105,8 +150,8 @@ export default class CommonHeader extends Component {
           maskClosable={false}
         >
           <h1>欢迎注册</h1>
-          <WrappedLoginForm
-            wrappedComponentRef={form => (this.form = form)}
+          <WrappedRegisterForm
+            wrappedComponentRef={form => (this.registerForm = form)}
             handleSubmit={this.handleSubmit}
           />
         </Modal>
@@ -115,110 +160,4 @@ export default class CommonHeader extends Component {
   }
 }
 
-const checkUserName = (rule, value, callback) => {
-  if (!value) {
-    callback()
-    return
-  }
-  if (!isValidUserName(value)) {
-    callback('请输入正确格式的用户名')
-    return
-  }
-  callback()
-}
-
-const checkPassword = (rule, value, callback) => {
-  if (!value) {
-    callback()
-    return
-  }
-  if (!isValidPassword(value)) {
-    callback('请输入正确格式的密码')
-    return
-  }
-  callback()
-}
-
-class LoginForm extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      canSeePassword: false
-    }
-    this.togglePassword = this.togglePassword.bind(this)
-  }
-  togglePassword = () => {
-    let val = !this.state.canSeePassword
-    this.setState({
-      canSeePassword: val
-    })
-  }
-  validForm = () => {
-    const form = this.props.form
-    form.validateFields((err, values) => {
-      if (!err) {
-        const params = form.getFieldsValue()
-        this.props.handleSubmit(params)
-      } else {
-        return false
-      }
-    })
-  }
-  render() {
-    const { getFieldDecorator } = this.props.form
-    const canSee = this.state.canSeePassword
-    return (
-      <Form layout="vertical">
-        <Form.Item extra="账号由字母开头，6-20位字母与数字组成，注册之后不能修改">
-          {getFieldDecorator('username', {
-            rules: [
-              { required: true, message: '请输入用户名' },
-              { validator: checkUserName }
-            ]
-          })(
-            <Input
-              prefix={
-                <span
-                  className="iconfont iconuser-s"
-                  style={{ color: '#ccc' }}
-                />
-              }
-              placeholder="Username"
-              autoComplete="off"
-            />
-          )}
-        </Form.Item>
-        <Form.Item extra="6-20位密码，只能使用数字、字母、英文标点符号">
-          {getFieldDecorator('password', {
-            rules: [
-              { required: true, message: '请输入密码' },
-              { validator: checkPassword }
-            ]
-          })(
-            <Input
-              prefix={
-                <span
-                  className="iconfont iconmima1"
-                  style={{ color: '#ccc' }}
-                />
-              }
-              suffix={
-                <span
-                  className={`iconfont ${
-                    canSee === false ? 'iconyanjing' : 'iconyanjing1'
-                  }`}
-                  style={{ color: '#ccc', cursor: 'pointer' }}
-                  onClick={this.togglePassword}
-                />
-              }
-              type={canSee === false ? 'password' : 'text'}
-              placeholder="Password"
-            />
-          )}
-        </Form.Item>
-      </Form>
-    )
-  }
-}
-
-const WrappedLoginForm = Form.create({ name: 'horizontal_login' })(LoginForm)
+export default CommonHeader

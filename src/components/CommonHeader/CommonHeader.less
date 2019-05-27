@@ -100,7 +100,8 @@
     }
   }
 }
-.register-modal {
+.register-modal,
+.login-modal {
   .ant-modal-content {
     border-radius: 0;
   }
@@ -110,5 +111,27 @@
   .ant-modal-footer {
     text-align: center;
     border-top: none;
+  }
+}
+
+.login-modal {
+  .ant-btn:last-child {
+    display: block;
+    margin: 0;
+    width: 100%;
+    border-radius: 0;
+    height: 40px;
+  }
+  .ant-btn:first-child {
+    display: none;
+  }
+  .login-title {
+    color: #0084ff;
+    font-size: 50px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .ant-modal-footer {
+    padding-bottom: 30px;
   }
 }
