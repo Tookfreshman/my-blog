@@ -1,10 +1,11 @@
 import './CommonHeader.less'
 import React, { Component } from 'react'
 import { NavLink } from 'react-router-dom'
-import { Popover, Modal } from 'antd'
-import { register, login } from '@/api/userControll'
+import { Popover, Modal, message } from 'antd'
+import { register, login, getCurrentUser } from '@/api/userControll'
 import { WrappedRegisterForm } from '../WrappedRegisterForm/WrappedRegisterForm'
 import WrappedLoginForm from '../WrappedLoginForm/WrappedLoginForm'
+import { connect } from 'react-redux'
 
 const navContent = (
   <ul className="avatar-dropdown">
@@ -27,9 +28,12 @@ class CommonHeader extends Component {
     super(props)
     this.submitRegister = this.submitRegister.bind(this)
     this.submitLogin = this.submitLogin.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleRegisterSubmit = this.handleRegisterSubmit.bind(this)
+    this.handleLoginSubmit = this.handleLoginSubmit.bind(this)
     this.toggleRegisterAlert = this.toggleRegisterAlert.bind(this)
     this.toggleLoginAlert = this.toggleLoginAlert.bind(this)
+    this.resetLoginForm = this.resetLoginForm.bind(this)
+    this.resetRegisterForm = this.resetRegisterForm.bind(this)
     this.state = {
       isLoggedIn: false,
       showLoginAlert: false,
@@ -45,40 +49,73 @@ class CommonHeader extends Component {
     this.loginForm.validForm()
   }
 
-  handleSubmit(obj) {
-    register(obj)
+  handleLoginSubmit(obj) {
+    this.props.setFlag()
+    login(obj)
       .then(res => {
+        this.props.removeFlag()
         if (res.code === '0') {
-          console.log(res)
+          message.success('登录成功')
+          this.props.addUserInfo(res.data)
+          this.setState({
+            showLoginAlert: false,
+            isLoggedIn: true
+          })
         } else {
-          this.$message.error(res.msg)
+          message.error(res.msg)
         }
       })
       .catch(error => {
+        this.props.removeFlag()
+        message.error(error)
         console.log(error)
       })
   }
 
+  handleRegisterSubmit(obj) {
+    this.props.setFlag()
+    register(obj)
+      .then(res => {
+        if (res.code === '0') {
+          this.props.removeFlag()
+          message.success('注册成功')
+          this.setState({
+            showRegisterAlert: false
+          })
+        } else {
+          this.props.removeFlag()
+          message.error(res.msg)
+        }
+      })
+      .catch(error => {
+        this.props.removeFlag()
+        console.log(error)
+        message.error(error)
+      })
+  }
+
+  resetLoginForm() {
+    this.loginForm.props.form.resetFields()
+  }
+
+  resetRegisterForm() {
+    this.registerForm.props.form.resetFields()
+  }
+
   toggleLoginAlert() {
     const val = this.state.showLoginAlert
-    if (val) {
-      this.loginForm.props.form.resetFields()
-    }
     this.setState({
       showLoginAlert: !val
     })
   }
+
   toggleRegisterAlert() {
     const val = this.state.showRegisterAlert
-    if (val) {
-      this.registerForm.props.form.resetFields()
-    }
     this.setState({
       showRegisterAlert: !val
     })
   }
   render() {
-    console.log(this.props)
     const isLoggedIn = this.state.isLoggedIn
     return (
       <header className="common-header">
@@ -128,15 +165,18 @@ class CommonHeader extends Component {
         <Modal
           visible={this.state.showLoginAlert}
           width={400}
-          mask={false}
+          maskClosable={false}
           wrapClassName="login-modal"
           okText="登录"
           cancelText="取消"
           onOk={this.submitLogin}
           onCancel={this.toggleLoginAlert}
+          centered={true}
+          afterClose={this.resetLoginForm}
         >
           <WrappedLoginForm
             wrappedComponentRef={form => (this.loginForm = form)}
+            handleLoginSubmit={this.handleLoginSubmit}
           />
         </Modal>
         <Modal
@@ -148,11 +188,12 @@ class CommonHeader extends Component {
           onOk={this.submitRegister}
           onCancel={this.toggleRegisterAlert}
           maskClosable={false}
+          afterClose={this.resetRegisterForm}
         >
           <h1>欢迎注册</h1>
           <WrappedRegisterForm
             wrappedComponentRef={form => (this.registerForm = form)}
-            handleSubmit={this.handleSubmit}
+            handleSubmit={this.handleRegisterSubmit}
           />
         </Modal>
       </header>
@@ -160,4 +201,32 @@ class CommonHeader extends Component {
   }
 }
 
-export default CommonHeader
+const mapStateToProps = state => {
+  return { loadingFlag: state.loadingFlag, userInfo: state.userInfo }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    setFlag: () => {
+      dispatch({
+        type: 'SET_FLAG'
+      })
+    },
+    removeFlag: () => {
+      dispatch({
+        type: 'REMOVE_FLAG'
+      })
+    },
+    addUserInfo: userInfo => {
+      dispatch({
+        type: 'ADD_USERINFO',
+        data: userInfo
+      })
+    }
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CommonHeader)

@@ -106,6 +106,7 @@ class RegisterForm extends Component {
               placeholder="Username"
               autoComplete="off"
               onBlur={this.canUse}
+              autoFocus
             />
           )}
         </FormItem>

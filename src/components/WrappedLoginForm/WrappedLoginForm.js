@@ -1,6 +1,5 @@
 import { Input, Form, message } from 'antd'
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 
 class LoginForm extends Component {
   constructor(props) {
@@ -9,6 +8,7 @@ class LoginForm extends Component {
       canSeePassword: false
     }
     this.togglePassword = this.togglePassword.bind(this)
+    this.handleKeyUp = this.handleKeyUp.bind(this)
   }
 
   togglePassword() {
@@ -16,6 +16,12 @@ class LoginForm extends Component {
     this.setState({
       canSeePassword: val
     })
+  }
+
+  handleKeyUp(e) {
+    if (e.keyCode === 13) {
+      this.validForm()
+    }
   }
 
   validForm() {
@@ -29,8 +35,7 @@ class LoginForm extends Component {
       message.error('请输入密码')
       return
     }
-    // if(params)
-    // this.props.handleSubmit(params)
+    this.props.handleLoginSubmit(params)
   }
 
   render() {
@@ -52,6 +57,7 @@ class LoginForm extends Component {
               placeholder="Username"
               autoComplete="off"
               type="text"
+              autoFocus
             />
           )}
         </FormItem>
@@ -75,6 +81,7 @@ class LoginForm extends Component {
               }
               type={canSee === false ? 'password' : 'text'}
               placeholder="Password"
+              onKeyUp={this.handleKeyUp}
             />
           )}
         </FormItem>
@@ -85,26 +92,4 @@ class LoginForm extends Component {
 
 const WrappedLoginForm = Form.create({ name: 'horizontal_login' })(LoginForm)
 
-const mapStateToProps = state => {
-  return { loadingFlag: state.loadingFlag }
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    setFlag: () => {
-      dispatch({
-        type: 'SET_FLAG'
-      })
-    },
-    removeFlag: () => {
-      dispatch({
-        type: 'REMOVE_FLAG'
-      })
-    }
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WrappedLoginForm)
+export default WrappedLoginForm
