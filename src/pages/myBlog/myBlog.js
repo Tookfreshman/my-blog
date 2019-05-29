@@ -78,7 +78,6 @@ export default class myBlog extends Component {
     const { editorState } = this.state
     return (
       <div className="publish-blog">
-        <CommonHeader />
         <div className="content-wrapper">
           <div>
             <Button onClick={this.selectEditor}>富文本编辑</Button>
