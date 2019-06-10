@@ -1,111 +1,64 @@
 import './myBlog.less'
 import React, { Component } from 'react'
-import CommonHeader from '@/components/CommonHeader/CommonHeader'
-import { Button } from 'antd'
-import marked from 'marked'
-import hljs from 'highlight.js'
-import BraftEditor from 'braft-editor'
-import 'braft-editor/dist/index.css'
+import Editor from './components/Editor'
+import { Button, Input, Select } from 'antd'
 
 export default class myBlog extends Component {
   constructor(props) {
     super(props)
-    this.onContentChange = this.onContentChange.bind(this)
-    this.selectEditor = this.selectEditor.bind(this)
-    this.selectMd = this.selectMd.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    // this.referContent = this.referContent.bind(this)
     this.state = {
-      articleDetail: {
-        content: ''
-      },
-      previewContent: '',
-      editorState: BraftEditor.createEditorState(null),
+      title: '',
+      articleType: '',
+      article: '',
       isEditor: true
     }
   }
-  componentWillMount() {
-    // marked相关配置
-    marked.setOptions({
-      renderer: new marked.Renderer(),
-      gfm: true,
-      tables: true,
-      breaks: true,
-      pedantic: false,
-      sanitize: true,
-      smartLists: true,
-      smartypants: false,
-      highlight: function(code) {
-        return hljs.highlightAuto(code).value
-      }
+  handleChange(value) {
+    this.setState({ articleType: value })
+  }
+  handleTitle(e) {
+    this.setState({ title: e.target.value })
+  }
+  fn(data) {
+    this.setState({ article: data }, () => {
+      console.log(this.state.article)
     })
   }
-  async componentDidMount() {
-    // 假设此处从服务端获取html格式的编辑器内容
-    // const htmlContent = await fetchEditorContent()
-    // 使用BraftEditor.createEditorState将html字符串转换为编辑器需要的editorStat
-    // this.setState({
-    //   editorState: BraftEditor.createEditorState(htmlContent)
-    // })
-  }
-
-  submitContent = async () => {
-    // 在编辑器获得焦点时按下ctrl+s会执行此方法
-    // 编辑器内容提交到服务端之前，可直接调用editorState.toHTML()来获取HTML格式的内容
-    const htmlContent = this.state.editorState.toHTML()
-    // const result = await saveEditorContent(htmlContent)
-  }
-
-  handleEditorChange = editorState => {
-    this.setState({ editorState })
-  }
-  onContentChange(e) {
-    this.setState({
-      previewContent: marked(e.target.innerText, { breaks: true })
-    })
-  }
-  selectEditor() {
-    this.setState({
-      isEditor: true
-    })
-    console.log(this.state.isEditor)
-  }
-  selectMd() {
-    this.setState({
-      isEditor: false
-    })
-    console.log(this.state.isEditor)
+  referContent() {
+    console.log(this.state.title)
   }
   render() {
-    const { editorState } = this.state
+    const { Option } = Select
+    const state = this.state
     return (
       <div className="publish-blog">
         <div className="content-wrapper">
-          <div>
-            <Button onClick={this.selectEditor}>富文本编辑</Button>
-
-            <Button onClick={this.selectMd}>md</Button>
-          </div>
-          <div
-            className="edit-content"
-            contentEditable="plaintext-only"
-            onInput={this.onContentChange}
-          />
-          <div
-            className="article-detail"
-            id="content"
-            dangerouslySetInnerHTML={{
-              __html: this.state.previewContent
-            }}
-          />
-          {/* 富文本编辑器 */}
-          <div className="my-component">
-            <BraftEditor
-              value={editorState}
-              onChange={this.handleEditorChange.bind(this)}
-              onSave={this.submitContent.bind(this)}
+          <div className="elevant-contents">
+            <Input
+              className="art-title"
+              value={state.title}
+              onChange={this.handleTitle.bind(this)}
+              placeholder="请输入标题"
             />
+            <Select
+              className="select-selection"
+              placeholder="请选择博文类型"
+              style={{ width: 200 }}
+              onChange={this.handleChange}
+            >
+              <Option value="1">技术类</Option>
+              <Option value="2">个人日记</Option>
+            </Select>
           </div>
-          <Button className="refer-btn" type="primary">
-            发布
+          <Editor pfn={this.fn.bind(this)} />
+          <Button
+            className="refer-btn"
+            type="primary"
+            onClick={this.referContent.bind(this)}
+          >
+            发博文
           </Button>
         </div>
       </div>

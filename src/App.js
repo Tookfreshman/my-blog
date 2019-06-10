@@ -17,7 +17,7 @@ class App extends Component {
           <CommonHeader />
           <div className="pages-wrapper">
             <div className="pages-content">
-              <Route path="/" component={Home} />
+              <Route path="/Home" component={Home} />
               <Route path="/myBlog" component={myBlog} />
             </div>
           </div>

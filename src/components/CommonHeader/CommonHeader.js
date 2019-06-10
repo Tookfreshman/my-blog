@@ -2,27 +2,13 @@ import './CommonHeader.less'
 import React, { Component } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Popover, Modal, message } from 'antd'
-import { register, login, getCurrentUser } from '@/api/userControll'
+import { register, login, logout, getCurrentUser } from '@/api/userControll'
 import { WrappedRegisterForm } from '../WrappedRegisterForm/WrappedRegisterForm'
 import WrappedLoginForm from '../WrappedLoginForm/WrappedLoginForm'
 import { connect } from 'react-redux'
+import md5EncryptAgain from '@/utils/md5EncryptAgain'
+import md5 from 'js-md5'
 
-const navContent = (
-  <ul className="avatar-dropdown">
-    <NavLink to="/home">
-      <li>
-        <span className="iconfont iconuser-s" />
-        我的主页
-      </li>
-    </NavLink>
-    <NavLink to="/home">
-      <li>
-        <span className="iconfont icontuichu" />
-        退出
-      </li>
-    </NavLink>
-  </ul>
-)
 class CommonHeader extends Component {
   constructor(props) {
     super(props)
@@ -34,11 +20,50 @@ class CommonHeader extends Component {
     this.toggleLoginAlert = this.toggleLoginAlert.bind(this)
     this.resetLoginForm = this.resetLoginForm.bind(this)
     this.resetRegisterForm = this.resetRegisterForm.bind(this)
+    this.handleLoginOut = this.handleLoginOut.bind(this)
     this.state = {
       isLoggedIn: false,
       showLoginAlert: false,
       showRegisterAlert: false
     }
+  }
+
+  componentWillMount() {
+    getCurrentUser()
+      .then(res => {
+        if (res.code === '0') {
+          console.log(res)
+        }
+      })
+      .catch(error => {
+        console.log(error)
+      })
+    let data = this.props.userInfo
+    if (Object.keys(data).length) {
+      this.setState({
+        isLoggedIn: true
+      })
+    }
+  }
+
+  handleLoginOut() {
+    this.props.setFlag()
+    logout()
+      .then(res => {
+        this.props.removeFlag()
+        if (res.code === '0') {
+          this.props.removeUserInfo()
+          this.setState({
+            isLoggedIn: false
+          })
+        } else {
+          message.error(res.msg)
+        }
+      })
+      .catch(error => {
+        this.props.removeFlag()
+        console.log(error)
+      })
   }
 
   submitRegister() {
@@ -51,6 +76,9 @@ class CommonHeader extends Component {
 
   handleLoginSubmit(obj) {
     this.props.setFlag()
+    let encryptData = md5EncryptAgain(md5(obj.password).toLocaleUpperCase())
+    obj.password = encryptData.md5Str
+    obj.pt = encryptData.pt
     login(obj)
       .then(res => {
         this.props.removeFlag()
@@ -74,6 +102,9 @@ class CommonHeader extends Component {
 
   handleRegisterSubmit(obj) {
     this.props.setFlag()
+    let encryptData = md5EncryptAgain(md5(obj.password).toLocaleUpperCase())
+    obj.password = encryptData.md5Str
+    obj.pt = encryptData.pt
     register(obj)
       .then(res => {
         if (res.code === '0') {
@@ -117,6 +148,28 @@ class CommonHeader extends Component {
   }
   render() {
     const isLoggedIn = this.state.isLoggedIn
+    const navContent = (
+      <ul className="avatar-dropdown">
+        <NavLink to="/home">
+          <li>
+            <span className="iconfont iconuser-s" />
+            我的主页
+          </li>
+        </NavLink>
+        <NavLink to="/home">
+          <li>
+            <span className="iconfont iconuser-s" />
+            设置
+          </li>
+        </NavLink>
+        <NavLink to="/home">
+          <li onClick={this.handleLoginOut}>
+            <span className="iconfont icontuichu" />
+            退出
+          </li>
+        </NavLink>
+      </ul>
+    )
     return (
       <header className="common-header">
         <div className="common-header-inner">
@@ -221,6 +274,16 @@ const mapDispatchToProps = dispatch => {
       dispatch({
         type: 'ADD_USERINFO',
         data: userInfo
+      })
+    },
+    removeUserInfo: () => {
+      dispatch({
+        type: 'REMOVE_USER_INFO'
+      })
+    },
+    getUserInfo: () => {
+      dispatch({
+        type: 'GET_USER_INFO'
       })
     }
   }
