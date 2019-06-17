@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
-import { BrowserRouter, Route } from 'react-router-dom'
+import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom'
 import Loading from '@/components/Loading/Loading'
 import CommonHeader from '@/components/CommonHeader/CommonHeader'
 import CommonFooter from '@/components/CommonFooter/CommonFooter'
 import './App.less'
-import Home from './pages/Home/Home'
+import Home from '@/pages/Home/Home'
+import Setting from '@/pages/PersonalSettings/Setting'
 import { connect } from 'react-redux'
 import { BackTop } from 'antd'
 
@@ -16,7 +17,11 @@ class App extends Component {
           <CommonHeader />
           <div className="pages-wrapper">
             <div className="pages-content">
-              <Route path="/" component={Home} />
+              <Switch>
+                <Route path="/home" component={Home} />
+                <Route path="/setting" component={Setting} />
+                <Redirect from="/*" to="/home" />
+              </Switch>
             </div>
           </div>
           {this.props.loadingFlag && <Loading />}

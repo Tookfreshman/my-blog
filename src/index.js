@@ -5,11 +5,18 @@ import App from './App'
 import { Provider } from 'react-redux'
 import store from './reducers'
 import * as serviceWorker from './serviceWorker'
+import zhCN from 'antd/lib/locale-provider/zh_CN'
+import { LocaleProvider } from 'antd'
+import moment from 'moment'
+import 'moment/locale/zh-cn'
+moment.locale('zh-cn')
 
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <LocaleProvider locale={zhCN}>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </LocaleProvider>,
   document.getElementById('root')
 )
 

@@ -1,22 +1,33 @@
 import './RightSideBar'
 import React, { Component } from 'react'
 import { Row, Col } from 'antd'
-import { getAllUserCount } from '@/api/countController'
+import { getAllUserCount, getViewerCount } from '@/api/countController'
 class CountingBar extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      allUserCount: 0
+      allUserCount: 0,
+      allViewerCount: 0
     }
   }
   componentWillMount() {
+    getViewerCount({})
+      .then(res => {
+        if (res.code === '0') {
+          this.setState({
+            allViewerCount: res.data
+          })
+        }
+      })
+      .catch(error => {
+        console.log(error)
+      })
     getAllUserCount({})
       .then(res => {
         if (res.code === '0') {
           this.setState({
             allUserCount: res.data
           })
-        } else {
         }
       })
       .catch(error => {
@@ -26,6 +37,7 @@ class CountingBar extends Component {
 
   render() {
     const allUserCount = this.state.allUserCount
+    const allViewerCount = this.state.allViewerCount
     return (
       <Row>
         <Col span={8}>
@@ -38,7 +50,7 @@ class CountingBar extends Component {
         </Col>
         <Col span={8}>
           <Row>浏览量</Row>
-          <Row>23423</Row>
+          <Row>{allViewerCount}</Row>
         </Col>
       </Row>
     )

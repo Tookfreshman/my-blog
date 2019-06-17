@@ -60,7 +60,7 @@ function randNum(minnum, maxnum) {
  *  生成一个指定长度的随机Token
  * @param {*} randomLength Number Token产长度
  */
-function GenNonDuplicateID(randomLength = 10) {
+export function GenNonDuplicateID(randomLength = 10) {
   return Number(
     Math.random()
       .toString()

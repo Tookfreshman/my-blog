@@ -1,8 +1,9 @@
 import './CommonHeader.less'
 import React, { Component } from 'react'
-import { NavLink } from 'react-router-dom'
-import { Popover, Modal, message } from 'antd'
-import { register, login, logout, getCurrentUser } from '@/api/userControll'
+import { NavLink, withRouter } from 'react-router-dom'
+import { Popover, Modal, message, Avatar } from 'antd'
+import { register, login, logout, getCurrentUser } from '@/api/userController'
+import { updateViewerCount } from '@/api/countController'
 import { WrappedRegisterForm } from '../WrappedRegisterForm/WrappedRegisterForm'
 import WrappedLoginForm from '../WrappedLoginForm/WrappedLoginForm'
 import { connect } from 'react-redux'
@@ -24,26 +25,35 @@ class CommonHeader extends Component {
     this.state = {
       isLoggedIn: false,
       showLoginAlert: false,
-      showRegisterAlert: false
+      showRegisterAlert: false,
+      userInfo: {}
     }
   }
 
   componentWillMount() {
+    updateViewerCount().catch(error => {
+      console.log(error)
+    })
     getCurrentUser()
       .then(res => {
         if (res.code === '0') {
-          console.log(res)
+          this.props.addUserInfo(res.data)
+          this.props.login()
+          this.setState({
+            isLoggedIn: true,
+            userInfo: res.data
+          })
+        } else {
+          this.props.removeUserInfo()
+          this.props.logOut()
+          this.setState({
+            isLoggedIn: false
+          })
         }
       })
       .catch(error => {
         console.log(error)
       })
-    let data = this.props.userInfo
-    if (Object.keys(data).length) {
-      this.setState({
-        isLoggedIn: true
-      })
-    }
   }
 
   handleLoginOut() {
@@ -53,6 +63,7 @@ class CommonHeader extends Component {
         this.props.removeFlag()
         if (res.code === '0') {
           this.props.removeUserInfo()
+          this.props.logOut()
           this.setState({
             isLoggedIn: false
           })
@@ -85,9 +96,11 @@ class CommonHeader extends Component {
         if (res.code === '0') {
           message.success('登录成功')
           this.props.addUserInfo(res.data)
+          this.props.login()
           this.setState({
             showLoginAlert: false,
-            isLoggedIn: true
+            isLoggedIn: true,
+            userInfo: res.data
           })
         } else {
           message.error(res.msg)
@@ -148,18 +161,13 @@ class CommonHeader extends Component {
   }
   render() {
     const isLoggedIn = this.state.isLoggedIn
+    const userInfo = this.state.userInfo
     const navContent = (
       <ul className="avatar-dropdown">
-        <NavLink to="/home">
+        <NavLink to="/setting/view">
           <li>
-            <span className="iconfont iconuser-s" />
+            <span className="iconfont iconyonghu" />
             我的主页
-          </li>
-        </NavLink>
-        <NavLink to="/home">
-          <li>
-            <span className="iconfont iconuser-s" />
-            设置
           </li>
         </NavLink>
         <NavLink to="/home">
@@ -173,7 +181,7 @@ class CommonHeader extends Component {
     return (
       <header className="common-header">
         <div className="common-header-inner">
-          <div className="blog-name">Took`s博客</div>
+          <div className="blog-name">图克的博客</div>
           <nav className="nav">
             <NavLink to="/home" className="nav-item">
               首页
@@ -194,12 +202,11 @@ class CommonHeader extends Component {
                   content={navContent}
                   trigger="click"
                 >
-                  <img
-                    className="avatar"
-                    width="30"
-                    height="30"
-                    src="https://pic3.zhimg.com/73168d1df9ac14fc196678361b390558_is.jpg"
-                    alt="头像"
+                  <Avatar
+                    shape="square"
+                    size={30}
+                    icon="user"
+                    src={userInfo.portraitUrl}
                   />
                 </Popover>
               </div>
@@ -285,11 +292,23 @@ const mapDispatchToProps = dispatch => {
       dispatch({
         type: 'GET_USER_INFO'
       })
+    },
+    login: () => {
+      dispatch({
+        type: 'LOGIN'
+      })
+    },
+    logOut: () => {
+      dispatch({
+        type: 'LOGOUT'
+      })
     }
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CommonHeader)
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(CommonHeader)
+)

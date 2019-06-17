@@ -1,7 +1,7 @@
 import { Input, Form } from 'antd'
 import React, { Component } from 'react'
 import { isValidUserName, isValidPassword } from '@/utils/validateReg.js'
-import { userInfoIsExistence } from '@/api/userControll'
+import { userInfoIsExistence } from '@/api/userController'
 
 class RegisterForm extends Component {
   constructor(props) {
