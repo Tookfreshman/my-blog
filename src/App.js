@@ -7,6 +7,7 @@ import './App.less'
 import Home from '@/pages/Home/Home'
 import Setting from '@/pages/PersonalSettings/Setting'
 import otherHomePage from '@/pages/otherHomePage/otherHomePage'
+import myBlog from '@/pages/myBlog/myBlog'
 import { connect } from 'react-redux'
 import { BackTop } from 'antd'
 
@@ -22,6 +23,7 @@ class App extends Component {
                 <Route path="/home" component={Home} />
                 <Route path="/setting" component={Setting} />
                 <Route path="/otherHomePage" component={otherHomePage} />
+                <Route path="/myBlog" component={myBlog} />
                 <Redirect from="/*" to="/home" />
               </Switch>
             </div>
