@@ -5,7 +5,7 @@ const actionTypes = {
   GET_USER_INFO: 'GET_USER_INFO'
 }
 
-const initialState = storage.ls.get('userInfo') || {}
+const initialState = {}
 
 export function reducer(state = initialState, action) {
   switch (action.type) {

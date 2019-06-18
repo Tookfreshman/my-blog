@@ -19,3 +19,6 @@ export const logout = params => axios.post(`${UP}/source-open/logout`, params)
 // 获取当前登录用户
 export const getCurrentUser = params =>
   axios.get(`${UP}/source-open/getCurrentUser`, params)
+
+// 获取当前用户个人资料设置
+export const getUserBrief = params => axios.get(`${UP}/getUserBrief`, params)

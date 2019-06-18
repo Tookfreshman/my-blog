@@ -1,17 +1,18 @@
 import './myBlog.less'
 import React, { Component } from 'react'
 import Editor from './components/Editor'
-import { Button, Input, Select } from 'antd'
+import { Button, Input, Select, message } from 'antd'
+import { publishBlog } from '@/api/articles'
 
 export default class myBlog extends Component {
   constructor(props) {
     super(props)
     this.handleChange = this.handleChange.bind(this)
-    // this.referContent = this.referContent.bind(this)
+    this.referContent = this.referContent.bind(this)
     this.state = {
       title: '',
       articleType: '',
-      article: '',
+      article:'',
       isEditor: true
     }
   }
@@ -27,7 +28,23 @@ export default class myBlog extends Component {
     })
   }
   referContent() {
-    console.log(this.state.title)
+    let obj = {
+      title: this.state.title,
+      articleType: this.state.articleType,
+      article: this.state.article
+    }
+    publishBlog(obj)
+      .then(res => {
+        if (res.code === '0') {
+          message.success('发布成功')
+        } else {
+          message.error(res.msg)
+        }
+      })
+      .catch(error => {
+        message.error(error)
+        console.log(error)
+      })
   }
   render() {
     const { Option } = Select
@@ -56,7 +73,7 @@ export default class myBlog extends Component {
           <Button
             className="refer-btn"
             type="primary"
-            onClick={this.referContent.bind(this)}
+            onClick={this.referContent}
           >
             发博文
           </Button>
