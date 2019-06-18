@@ -1,5 +1,6 @@
 import './ArticleList.less'
 import React, { Component } from 'react'
+import { NavLink } from 'react-router-dom'
 
 class ArticleListItem extends Component {
   render() {
@@ -18,10 +19,17 @@ class ArticleListItem extends Component {
             <h3 className="article-title txt-ellipsis">{data.title}</h3>
             <div className="target-article-info">
               <div>
-                <span className="iconfont iconzuozhe" />
-                <span className="p-5 txt-ellipsis" title={data.author}>
-                  {data.author}
-                </span>
+                <NavLink
+                  to={{
+                    pathname: '/otherHomePage',
+                    search: '?userId=5d0059ff8377ac630c93a4f5'
+                  }}
+                >
+                  <span className="iconfont iconzuozhe" />
+                  <span className="p-5 txt-ellipsis" title={data.author}>
+                    {data.author}
+                  </span>
+                </NavLink>
               </div>
               <div>
                 <span className="iconfont iconhuabanfuben" />

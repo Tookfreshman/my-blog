@@ -18,7 +18,27 @@ export const logout = params => axios.post(`${UP}/source-open/logout`, params)
 
 // 获取当前登录用户
 export const getCurrentUser = params =>
-  axios.get(`${UP}/source-open/getCurrentUser`, params)
+  axios.get(`${UP}/getCurrentUser`, params)
 
 // 获取当前用户个人资料设置
 export const getUserBrief = params => axios.get(`${UP}/getUserBrief`, params)
+
+// 根据userId查询用户的信息
+// 获取当前用户个人资料设置
+export const getUserBriefByUserId = params =>
+  axios.get(`${UP}/source-open/getUserBriefByUserId`, params)
+
+// 关注某个用户
+export const focusSomeone = params => axios.patch(`${UP}/focusSomeone`, params)
+
+// 取消关注某个用户
+export const unfocusSomeone = params =>
+  axios.patch(`${UP}/unfocusSomeone`, params)
+
+// 查询是否关注某个用户
+export const isFocusSomeone = params =>
+  axios.get(`${UP}/isFocusSomeone`, params)
+
+// 根据userId查询当前用户的粉丝和关注的人
+export const findFansAndFocusByuserId = params =>
+  axios.get(`${UP}/source-open/findFansAndFocusByuserId`, params)

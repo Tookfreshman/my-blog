@@ -206,7 +206,7 @@ class CommonHeader extends Component {
                     shape="square"
                     size={30}
                     icon="user"
-                    src={userInfo.portraitUrl}
+                    src={userInfo && userInfo.portraitUrl}
                   />
                 </Popover>
               </div>

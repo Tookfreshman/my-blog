@@ -6,6 +6,7 @@ import CommonFooter from '@/components/CommonFooter/CommonFooter'
 import './App.less'
 import Home from '@/pages/Home/Home'
 import Setting from '@/pages/PersonalSettings/Setting'
+import otherHomePage from '@/pages/otherHomePage/otherHomePage'
 import { connect } from 'react-redux'
 import { BackTop } from 'antd'
 
@@ -20,6 +21,7 @@ class App extends Component {
               <Switch>
                 <Route path="/home" component={Home} />
                 <Route path="/setting" component={Setting} />
+                <Route path="/otherHomePage" component={otherHomePage} />
                 <Redirect from="/*" to="/home" />
               </Switch>
             </div>
