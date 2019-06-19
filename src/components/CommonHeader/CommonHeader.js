@@ -192,6 +192,12 @@ class CommonHeader extends Component {
           </nav>
           {isLoggedIn ? (
             <div className="userinfo">
+              <NavLink to="/publish">
+                <div className="pulish-blog">
+                  <i className="iconfont iconxiepinglun" />
+                  <span>写博客</span>
+                </div>
+              </NavLink>
               <div className="notice-ring">
                 <span className="iconfont iconlingdang" />
                 <span className="notice-num">12</span>

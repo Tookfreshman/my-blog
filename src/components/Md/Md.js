@@ -32,6 +32,7 @@ export default class Md extends Component {
   }
 
   onContentChange(e) {
+    console.log(marked(e.target.innerText, { breaks: true }))
     this.setState({
       previewContent: marked(e.target.innerText, { breaks: true })
     })

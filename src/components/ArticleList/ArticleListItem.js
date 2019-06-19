@@ -31,32 +31,32 @@ class ArticleListItem extends Component {
                   </span>
                 </NavLink>
               </div>
-              <div>
+              {/* <div>
                 <span className="iconfont iconhuabanfuben" />
                 <span className="p-5 txt-ellipsis" title={data.favor}>
                   {data.favor}
                 </span>
-              </div>
+              </div> */}
               <div>
                 <span className="iconfont iconyanjing1" />
-                <span className="p-5 txt-ellipsis" title={data.views}>
-                  {data.views}
+                <span className="p-5 txt-ellipsis" title={data.viewerCount}>
+                  {data.viewerCount}
                 </span>
               </div>
               <div>
                 <span className="iconfont iconshijian" />
-                <span className="p-5 txt-ellipsis" title={data.createTime}>
-                  {data.createTime}
+                <span className="p-5 txt-ellipsis" title={data.publishTime}>
+                  {data.publishTime}
                 </span>
               </div>
               <div>
                 <span className="iconfont iconduomeitiicon" />
-                <span className="p-5 txt-ellipsis" title={data.createTime}>
-                  {data.type.join(',')}
+                <span className="p-5 txt-ellipsis" title={data.articleType}>
+                  {data.articleType}
                 </span>
               </div>
             </div>
-            <p className="article-brief">{data.content}</p>
+            <p className="article-brief">{data.article}</p>
           </div>
         </div>
       </li>

@@ -1,4 +1,4 @@
-import './otherHomePage.less'
+import './OtherHomePage.less'
 import React, { Component } from 'react'
 import { Card, Avatar, Button, message } from 'antd'
 import CountingBar from '@/components/CountingBar/CountingBar'
@@ -12,7 +12,7 @@ import {
 import getUrlParam from '@/utils/getUrlParam'
 import { connect } from 'react-redux'
 
-class otherHomePage extends Component {
+class OtherHomePage extends Component {
   constructor(props) {
     super(props)
     this.focus = this.focus.bind(this)
@@ -177,4 +177,4 @@ const mapStateToProps = state => {
   return { userInfo: state.userInfo, isLogin: state.isLogin }
 }
 
-export default connect(mapStateToProps)(otherHomePage)
+export default connect(mapStateToProps)(OtherHomePage)

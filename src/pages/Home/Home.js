@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 import { Menu } from 'antd'
 import ArticleList from '@/components/ArticleList/ArticleList'
 import RightSideBar from '@/components/RightSideBar/RightSideBar'
-import { articleList } from '@/utils/localTestData'
 export default class Home extends Component {
   render() {
     const MenuItem = Menu.Item
@@ -14,7 +13,7 @@ export default class Home extends Component {
             <MenuItem key="recent">最新博客</MenuItem>
           </Menu>
           <div className="article-list">
-            <ArticleList list={articleList} />
+            <ArticleList />
           </div>
         </div>
         <div className="home-right-side">

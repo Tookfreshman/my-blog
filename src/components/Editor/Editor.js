@@ -19,17 +19,20 @@ class Editor extends Component {
     // })
   }
 
-  submitContent = async () => {
+  async submitContent() {
     // 在编辑器获得焦点时按下ctrl+s会执行此方法
     // 编辑器内容提交到服务端之前，可直接调用editorState.toHTML()来获取HTML格式的内容
     const htmlContent = this.state.editorState.toHTML()
     console.log(htmlContent)
     // const result = await saveEditorContent(htmlContent)
   }
-  handleEditorChange = editorState => {
+
+  handleEditorChange(editorState) {
     this.setState({ editorState })
-    this.props.pfn(editorState.toHTML())
+    console.log(editorState.toHTML())
+    // this.props.pfn(editorState.toHTML())
   }
+
   render() {
     const { editorState } = this.state
     return (
@@ -38,7 +41,6 @@ class Editor extends Component {
           value={editorState}
           onBlur={this.handleEditorChange.bind(this)}
           onSave={this.submitContent.bind(this)}
-          placeholder="请输入正文"
         />
       </div>
     )
