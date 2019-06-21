@@ -1,12 +1,15 @@
 import './ArticleList.less'
 import React, { Component } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, withRouter } from 'react-router-dom'
 
 class ArticleListItem extends Component {
+  previewBlogDetails() {
+    this.props.history.push(`/blogDetails?id=${this.props.data._id}`)
+  }
   render() {
     const data = this.props.data
     return (
-      <li>
+      <li onClick={this.previewBlogDetails.bind(this)}>
         <div className="list-wrapper">
           <div className="article-img-wrapper">
             <img
@@ -64,4 +67,4 @@ class ArticleListItem extends Component {
   }
 }
 
-export default ArticleListItem
+export default withRouter(ArticleListItem)
