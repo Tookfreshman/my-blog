@@ -19,7 +19,13 @@ class ArticleListItem extends Component {
             />
           </div>
           <div className="article-info">
-            <h3 className="article-title txt-ellipsis">{data.title}</h3>
+            <h3
+              className="article-title txt-ellipsis"
+              title={data.title}
+              style={{ cursor: 'pointer' }}
+            >
+              {data.title}
+            </h3>
             <div className="target-article-info">
               <div>
                 <NavLink

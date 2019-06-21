@@ -4,6 +4,7 @@ import { Form, Select, Input, Button, message, Row, Col } from 'antd'
 import MdEditor from '@/components/MdEditor/MdEditor'
 import { publishBlog } from '@/api/articles'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 
 class BlogForm extends Component {
   constructor(props) {
@@ -30,6 +31,7 @@ class BlogForm extends Component {
           .then(res => {
             if (res.code === '0') {
               message.success('发布成功')
+              this.props.history.push('/home')
             } else {
               message.error(res.msg)
             }
@@ -133,4 +135,4 @@ const mapStateToProps = state => {
   return { isLogin: state.isLogin, userInfo: state.userInfo }
 }
 
-export default connect(mapStateToProps)(WrappedBlogForm)
+export default withRouter(connect(mapStateToProps)(WrappedBlogForm))

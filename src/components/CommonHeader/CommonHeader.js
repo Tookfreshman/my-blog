@@ -41,9 +41,6 @@ class CommonHeader extends Component {
     getCurrentUser()
       .then(res => {
         if (res.code === '0') {
-          if (!res.data.nickName) {
-            this.redirectToSetting()
-          }
           this.props.addUserInfo(res.data)
           this.props.login()
           this.setState({
@@ -102,9 +99,6 @@ class CommonHeader extends Component {
         this.props.removeFlag()
         if (res.code === '0') {
           message.success('登录成功')
-          if (!res.data.nickName) {
-            this.redirectToSetting()
-          }
           this.props.addUserInfo(res.data)
           this.props.login()
           this.setState({

@@ -3,10 +3,6 @@ import React, { Component } from 'react'
 import { Row, Col } from 'antd'
 
 class CountingBar extends Component {
-  constructor(props) {
-    super(props)
-  }
-
   render() {
     const border = this.props.border ? true : false
     const data = this.props.data

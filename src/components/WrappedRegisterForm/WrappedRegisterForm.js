@@ -16,6 +16,9 @@ class RegisterForm extends Component {
 
   canUse() {
     const userName = this.props.form.getFieldValue('userName')
+    if (!userName) {
+      return
+    }
     const isError = this.props.form.getFieldError('userName') ? true : false
     if (isError) {
       return

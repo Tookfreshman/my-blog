@@ -41,12 +41,16 @@ class SettingForm extends Component {
       industryList: [],
       options: [],
       userBrief: {},
-      showBackButton: true
+      showBackButton: true,
+      nickNameDisabled: false
     }
   }
 
   canUse() {
     const nickName = this.props.form.getFieldValue('nickName')
+    if (!nickName) {
+      return
+    }
     const isError = this.props.form.getFieldError('nickName') ? true : false
     if (isError) {
       return
@@ -106,6 +110,17 @@ class SettingForm extends Component {
     }
   }
 
+  saveAndBack() {
+    let modify = getUrlParam('modify')
+    if (!modify) {
+      message.success('保存成功')
+      this.props.history.push('/home')
+    } else {
+      message.success('修改成功')
+      this.props.history.push('/setting/view')
+    }
+  }
+
   queryAllProvinceAndCitys() {
     getAllProvinceAndCitys()
       .then(res => {
@@ -136,6 +151,11 @@ class SettingForm extends Component {
             ]
           } else {
             fileList = []
+          }
+          if (res.data.nickName) {
+            this.setState({
+              nickNameDisabled: true
+            })
           }
           this.setState({
             userBrief: res.data,
@@ -176,12 +196,16 @@ class SettingForm extends Component {
           ...fileData,
           userId
         }
+        if (this.state.nickNameDisabled) {
+          params.isNew = false
+        } else {
+          params.isNew = true
+        }
         this.props.setFlag()
         uploadUserSetting(params)
           .then(res => {
             if (res.code === '0') {
-              message.success('修改成功')
-              this.props.history.push('/setting/view')
+              this.saveAndBack()
             } else {
               message.error(res.msg)
             }
@@ -256,7 +280,7 @@ class SettingForm extends Component {
     const { getFieldDecorator } = this.props.form
     const FormItem = Form.Item
     const TextArea = Input.TextArea
-    const { userBrief, showBackButton } = this.state
+    const { userBrief, showBackButton, nickNameDisabled } = this.state
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -301,7 +325,7 @@ class SettingForm extends Component {
             <img alt="example" style={{ width: '100%' }} src={previewImage} />
           </Modal>
         </FormItem>
-        <FormItem label="昵称：">
+        <FormItem label="昵称：" extra="昵称一旦保存，无法再进行修改">
           {getFieldDecorator('nickName', {
             rules: [{ required: true, message: '请输入昵称' }],
             initialValue: userBrief.nickName
@@ -319,6 +343,7 @@ class SettingForm extends Component {
               autoComplete="off"
               autoFocus
               onBlur={() => this.canUse()}
+              disabled={nickNameDisabled ? true : false}
             />
           )}
         </FormItem>
