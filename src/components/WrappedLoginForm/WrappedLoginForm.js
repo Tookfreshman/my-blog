@@ -1,4 +1,4 @@
-import { Input, Form, message } from 'antd'
+import { Input, Form } from 'antd'
 import React, { Component } from 'react'
 
 class LoginForm extends Component {
@@ -26,16 +26,14 @@ class LoginForm extends Component {
 
   validForm() {
     const form = this.props.form
-    const params = form.getFieldsValue()
-    if (!params.userName) {
-      message.error('请输入用户名')
-      return
-    }
-    if (!params.password) {
-      message.error('请输入密码')
-      return
-    }
-    this.props.handleLoginSubmit(params)
+    form.validateFields((err, values) => {
+      if (!err) {
+        this.props.handleLoginSubmit(values)
+        return
+      } else {
+        return false
+      }
+    })
   }
 
   render() {
@@ -46,7 +44,9 @@ class LoginForm extends Component {
       <Form layout="vertical">
         <div className="login-title">登录</div>
         <FormItem>
-          {getFieldDecorator('userName')(
+          {getFieldDecorator('userName', {
+            rules: [{ required: true, message: '请输入用户名' }]
+          })(
             <Input
               prefix={
                 <span
@@ -54,7 +54,7 @@ class LoginForm extends Component {
                   style={{ color: '#ccc' }}
                 />
               }
-              placeholder="Username"
+              placeholder="用户名"
               autoComplete="off"
               type="text"
               autoFocus
@@ -62,7 +62,9 @@ class LoginForm extends Component {
           )}
         </FormItem>
         <FormItem>
-          {getFieldDecorator('password')(
+          {getFieldDecorator('password', {
+            rules: [{ required: true, message: '请输入密码' }]
+          })(
             <Input
               prefix={
                 <span
@@ -76,12 +78,12 @@ class LoginForm extends Component {
                     canSee === false ? 'iconyanjing' : 'iconyanjing1'
                   }`}
                   style={{ color: '#ccc', cursor: 'pointer' }}
-                  onClick={this.togglePassword}
+                  onClick={() => this.togglePassword()}
                 />
               }
               type={canSee === false ? 'password' : 'text'}
-              placeholder="Password"
-              onKeyUp={this.handleKeyUp}
+              placeholder="密码"
+              onKeyUp={e => this.handleKeyUp(e)}
             />
           )}
         </FormItem>

@@ -34,9 +34,16 @@ class CommonHeader extends Component {
     updateViewerCount().catch(error => {
       console.log(error)
     })
+    this.queryUserInfo()
+  }
+
+  queryUserInfo() {
     getCurrentUser()
       .then(res => {
         if (res.code === '0') {
+          if (!res.data.nickName) {
+            this.redirectToSetting()
+          }
           this.props.addUserInfo(res.data)
           this.props.login()
           this.setState({
@@ -95,6 +102,9 @@ class CommonHeader extends Component {
         this.props.removeFlag()
         if (res.code === '0') {
           message.success('登录成功')
+          if (!res.data.nickName) {
+            this.redirectToSetting()
+          }
           this.props.addUserInfo(res.data)
           this.props.login()
           this.setState({
@@ -153,6 +163,10 @@ class CommonHeader extends Component {
     })
   }
 
+  redirectToSetting() {
+    this.props.history.push('/editSetting')
+  }
+
   toggleRegisterAlert() {
     const val = this.state.showRegisterAlert
     this.setState({
@@ -171,7 +185,7 @@ class CommonHeader extends Component {
           </li>
         </NavLink>
         <NavLink to="/home">
-          <li onClick={this.handleLoginOut}>
+          <li onClick={() => this.handleLoginOut()}>
             <span className="iconfont icontuichu" />
             退出
           </li>
@@ -219,10 +233,16 @@ class CommonHeader extends Component {
             </div>
           ) : (
             <div className="user-login-register">
-              <div className="user-login" onClick={this.toggleLoginAlert}>
+              <div
+                className="user-login"
+                onClick={() => this.toggleLoginAlert()}
+              >
                 登录
               </div>
-              <div className="user-register" onClick={this.toggleRegisterAlert}>
+              <div
+                className="user-register"
+                onClick={() => this.toggleRegisterAlert()}
+              >
                 注册
               </div>
             </div>
@@ -252,7 +272,7 @@ class CommonHeader extends Component {
           okText="注册"
           cancelText="取消"
           onOk={this.submitRegister}
-          onCancel={this.toggleRegisterAlert}
+          onCancel={() => this.toggleRegisterAlert()}
           maskClosable={false}
           afterClose={this.resetRegisterForm}
         >

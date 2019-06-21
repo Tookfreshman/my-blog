@@ -118,7 +118,7 @@ class BlogForm extends Component {
           })(<MdEditor onMdChange={this.mdChange} />)}
         </FormItem>
         <FormItem style={{ textAlign: 'center' }}>
-          <Button type="primary" onClick={this.submitForm}>
+          <Button type="primary" onClick={() => this.submitForm()}>
             提交
           </Button>
         </FormItem>

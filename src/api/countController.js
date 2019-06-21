@@ -12,3 +12,7 @@ export const getViewerCount = params =>
 // 更新网站访问量
 export const updateViewerCount = params =>
   axios.post(`${COUNT}/source-open/updateViewerCount`, params)
+
+// 查看网站的文章数
+export const getBlogsCount = params =>
+  axios.get(`${COUNT}/source-open/getBlogsCount`, params)

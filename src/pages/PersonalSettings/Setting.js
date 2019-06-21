@@ -1,6 +1,5 @@
 import './Setting.less'
 import React, { Component } from 'react'
-import WrappedSettingForm from '@/components/WrappedSettingForm/WrappedSettingForm'
 import SettingView from '@/components/SettingView/SettingView'
 import { Route, Switch } from 'react-router-dom'
 import SettingMenu from '@/components/SettingMenu/SettingMenu'
@@ -20,7 +19,6 @@ class Setting extends Component {
         <div className="setting-main-port">
           <Switch>
             <Route path="/setting/view" component={SettingView} />
-            <Route path="/setting/edit" component={WrappedSettingForm} />
             <Route path="/setting/focus" component={Focus} />
           </Switch>
         </div>

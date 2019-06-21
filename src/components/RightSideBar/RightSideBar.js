@@ -1,19 +1,30 @@
 import './RightSideBar.less'
 import React, { Component } from 'react'
 import CountingBar from '@/components/CountingBar/CountingBar'
-import { getAllUserCount, getViewerCount } from '@/api/countController'
+import {
+  getAllUserCount,
+  getViewerCount,
+  getBlogsCount
+} from '@/api/countController'
 
 class RightSideBar extends Component {
   constructor(props) {
     super(props)
     this.state = {
       allUserCount: 0,
-      allViewerCount: 0
+      allViewerCount: 0,
+      allBlogsCount: 0
     }
   }
 
   componentWillMount() {
-    getViewerCount({})
+    this.queryViewerCount()
+    this.queryAllUserCount()
+    this.queryBlogsCount()
+  }
+
+  queryViewerCount() {
+    getViewerCount()
       .then(res => {
         if (res.code === '0') {
           this.setState({
@@ -24,7 +35,10 @@ class RightSideBar extends Component {
       .catch(error => {
         console.log(error)
       })
-    getAllUserCount({})
+  }
+
+  queryAllUserCount() {
+    getAllUserCount()
       .then(res => {
         if (res.code === '0') {
           this.setState({
@@ -37,12 +51,25 @@ class RightSideBar extends Component {
       })
   }
 
+  queryBlogsCount() {
+    getBlogsCount()
+      .then(res => {
+        if (res.code === '0') {
+          this.setState({
+            allBlogsCount: res.data
+          })
+        }
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
+
   render() {
-    const allUserCount = this.state.allUserCount
-    const allViewerCount = this.state.allViewerCount
+    const { allUserCount, allViewerCount, allBlogsCount } = this.state
     const data = [
       { name: '总用户', val: allUserCount },
-      { name: '总文章', val: '123213' },
+      { name: '总文章', val: allBlogsCount },
       { name: '浏览量', val: allViewerCount }
     ]
     return (

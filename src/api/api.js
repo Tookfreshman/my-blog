@@ -1,5 +1,6 @@
 import axios from 'axios'
 import qs from 'qs'
+import store from '@/reducers'
 let baseURL = '/api'
 
 if (process.env.NODE_ENV === 'development') {
@@ -30,6 +31,18 @@ axios.interceptors.request.use(
 // 添加一个响应拦截器
 axios.interceptors.response.use(
   function(response) {
+    let { code } = response.data
+    if (code === '333' && window.location.href.indexOf('/editSetting') === -1) {
+      window.location.href = '/editSetting'
+    }
+    if (code === '401') {
+      store.dispatch({
+        type: 'REMOVE_USER_INFO'
+      })
+      store.dispatch({
+        type: 'LOGOUT'
+      })
+    }
     return response
   },
   function(error) {

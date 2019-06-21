@@ -16,8 +16,9 @@ import { NavLink, withRouter } from 'react-router-dom'
 import COS from 'cos-js-sdk-v5'
 import { uploadUserSetting } from '@/api/uploadController'
 import { getAllIndustrys, getAllProvinceAndCitys } from '@/api/configController'
-import { getUserBrief } from '@/api/userController'
+import { getUserBrief, nickNameIsExistence } from '@/api/userController'
 import { connect } from 'react-redux'
+import getUrlParam from '@/utils/getUrlParam'
 import moment from 'moment'
 const { Option } = Select
 
@@ -39,11 +40,50 @@ class SettingForm extends Component {
       },
       industryList: [],
       options: [],
-      userBrief: {}
+      userBrief: {},
+      showBackButton: true
     }
   }
 
-  componentWillMount() {
+  canUse() {
+    const nickName = this.props.form.getFieldValue('nickName')
+    const isError = this.props.form.getFieldError('nickName') ? true : false
+    if (isError) {
+      return
+    }
+    nickNameIsExistence({ nickName })
+      .then(res => {
+        if (res.code === '0') {
+        } else if (res.code === '-1') {
+          this.props.form.setFields({
+            nickName: {
+              value: nickName,
+              errors: [new Error(res.msg)]
+            }
+          })
+        }
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
+
+  componentDidMount() {
+    this.queryAllIndustrys()
+    this.queryAllProvinceAndCitys()
+    this.queryUserBrief()
+    this.backCanShow()
+    this.messageAlert()
+  }
+
+  messageAlert() {
+    let modify = getUrlParam('modify')
+    if (!modify) {
+      message.info('需要先完善信息')
+    }
+  }
+
+  queryAllIndustrys() {
     getAllIndustrys()
       .then(res => {
         if (res.code === '0') {
@@ -55,6 +95,18 @@ class SettingForm extends Component {
       .catch(error => {
         console.log(error)
       })
+  }
+
+  backCanShow() {
+    let modify = getUrlParam('modify')
+    if (!modify) {
+      this.setState({
+        showBackButton: false
+      })
+    }
+  }
+
+  queryAllProvinceAndCitys() {
     getAllProvinceAndCitys()
       .then(res => {
         if (res.code === '0') {
@@ -66,22 +118,30 @@ class SettingForm extends Component {
       .catch(error => {
         console.log(error)
       })
+  }
+
+  queryUserBrief() {
     getUserBrief()
       .then(res => {
         if (res.code === '0') {
-          this.setState({
-            userBrief: res.data,
-            fileList: [
+          let fileList
+          if (res.data.portraitName && res.data.portraitUrl) {
+            fileList = [
               {
                 uid: '-1',
                 name: res.data.portraitName,
                 status: 'done',
                 url: res.data.portraitUrl
               }
-            ],
+            ]
+          } else {
+            fileList = []
+          }
+          this.setState({
+            userBrief: res.data,
+            fileList: fileList,
             previewImage: res.data.portraitUrl
           })
-          console.log(this.state.previewImage)
         }
       })
       .catch(error => {
@@ -95,34 +155,46 @@ class SettingForm extends Component {
       return
     }
     const form = this.props.form
-    const fileData = this.state.fileData
-    const userId = this.props.userInfo.userId
-    const bornDate = form.getFieldValue('bornDate')
-      ? form.getFieldValue('bornDate').format('YYYY-MM-DD')
-      : ''
-    const region = form.getFieldValue('region')
-      ? form.getFieldValue('region').join('-')
-      : ''
-    const params = {
-      ...form.getFieldsValue(),
-      region,
-      bornDate,
-      ...fileData,
-      userId
+    const isError = form.getFieldError('nickName') ? true : false
+    if (isError) {
+      return
     }
-    this.props.setFlag()
-    uploadUserSetting(params)
-      .then(res => {
-        if (res.code === '0') {
-          message.success('修改成功')
-          this.props.history.push('/setting/view')
+    form.validateFields(err => {
+      if (!err) {
+        const fileData = this.state.fileData
+        const userId = this.props.userInfo.userId
+        const bornDate = form.getFieldValue('bornDate')
+          ? form.getFieldValue('bornDate').format('YYYY-MM-DD')
+          : ''
+        const region = form.getFieldValue('region')
+          ? form.getFieldValue('region').join('-')
+          : ''
+        const params = {
+          ...form.getFieldsValue(),
+          region,
+          bornDate,
+          ...fileData,
+          userId
         }
-        this.props.removeFlag()
-      })
-      .catch(error => {
-        this.props.removeFlag()
-        console.log(error)
-      })
+        this.props.setFlag()
+        uploadUserSetting(params)
+          .then(res => {
+            if (res.code === '0') {
+              message.success('修改成功')
+              this.props.history.push('/setting/view')
+            } else {
+              message.error(res.msg)
+            }
+            this.props.removeFlag()
+          })
+          .catch(error => {
+            this.props.removeFlag()
+            console.log(error)
+          })
+      } else {
+        return false
+      }
+    })
   }
 
   handlePreview() {
@@ -184,7 +256,7 @@ class SettingForm extends Component {
     const { getFieldDecorator } = this.props.form
     const FormItem = Form.Item
     const TextArea = Input.TextArea
-    const userBrief = this.state.userBrief
+    const { userBrief, showBackButton } = this.state
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -230,7 +302,10 @@ class SettingForm extends Component {
           </Modal>
         </FormItem>
         <FormItem label="昵称：">
-          {getFieldDecorator('nickName', { initialValue: userBrief.nickName })(
+          {getFieldDecorator('nickName', {
+            rules: [{ required: true, message: '请输入昵称' }],
+            initialValue: userBrief.nickName
+          })(
             <Input
               suffix={
                 <span
@@ -243,12 +318,13 @@ class SettingForm extends Component {
               placeholder="昵称"
               autoComplete="off"
               autoFocus
+              onBlur={() => this.canUse()}
             />
           )}
         </FormItem>
         <FormItem label="生日：">
           {getFieldDecorator('bornDate', {
-            initialValue: moment(userBrief.bornDate)
+            initialValue: userBrief.bornDate ? moment(userBrief.bornDate) : null
           })(
             <DatePicker
               suffixIcon={
@@ -264,7 +340,9 @@ class SettingForm extends Component {
           )}
         </FormItem>
         <FormItem label="性别：">
-          {getFieldDecorator('sex', { initialValue: userBrief.sex })(
+          {getFieldDecorator('sex', {
+            initialValue: userBrief.sex ? userBrief.sex : undefined
+          })(
             <Select
               suffixIcon={
                 <span
@@ -301,7 +379,10 @@ class SettingForm extends Component {
           )}
         </FormItem>
         <FormItem label="行业：">
-          {getFieldDecorator('industry', { initialValue: userBrief.industry })(
+          {getFieldDecorator('industry', {
+            rules: [{ required: true, message: '请选择行业' }],
+            initialValue: userBrief.industry ? userBrief.industry : undefined
+          })(
             <Select
               suffixIcon={
                 <span
@@ -322,11 +403,18 @@ class SettingForm extends Component {
           )}
         </FormItem>
         <FormItem style={{ marginLeft: 80 }}>
-          <Button type="primary" onClick={this.submitForm}>
+          <Button type="primary" onClick={() => this.submitForm()}>
             确定
           </Button>
           <NavLink to="/setting/view">
-            <Button style={{ marginLeft: 30 }}>返回</Button>
+            <Button
+              style={{
+                marginLeft: 30,
+                display: showBackButton ? 'inline' : 'none'
+              }}
+            >
+              返回
+            </Button>
           </NavLink>
         </FormItem>
       </Form>

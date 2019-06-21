@@ -3,8 +3,8 @@ import axios from './api'
 const UP = '/user-provider'
 
 // 查询用户是否被注册
-export const userInfoIsExistence = params =>
-  axios.get(`${UP}/source-open/userInfoIsExistence`, params)
+export const userNameIsExistence = params =>
+  axios.get(`${UP}/source-open/userNameIsExistence`, params)
 
 // 注册账号
 export const register = params =>
@@ -42,3 +42,7 @@ export const isFocusSomeone = params =>
 // 根据userId查询当前用户的粉丝和关注的人
 export const findFansAndFocusByuserId = params =>
   axios.get(`${UP}/source-open/findFansAndFocusByuserId`, params)
+
+// 查询昵称是否可用
+export const nickNameIsExistence = params =>
+  axios.get(`${UP}/source-open/nickNameIsExistence`, params)

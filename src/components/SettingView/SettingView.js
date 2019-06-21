@@ -68,7 +68,7 @@ class SettingView extends Component {
           <div style={{ wordBreak: 'break-word' }}>{userBrief.brief}</div>
         </FormItem>
         <FormItem>
-          <NavLink to="/setting/edit" style={{ marginLeft: '50px' }}>
+          <NavLink to="/editSetting?modify=1" style={{ marginLeft: '50px' }}>
             <Button type="primary">修改</Button>
           </NavLink>
         </FormItem>

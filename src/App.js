@@ -8,6 +8,7 @@ import Home from '@/pages/Home/Home'
 import Setting from '@/pages/PersonalSettings/Setting'
 import OtherHomePage from '@/pages/OtherHomePage/OtherHomePage'
 import Publish from '@/pages/Publish/Publish'
+import EditSetting from '@/pages/EditSetting/EditSetting'
 import { connect } from 'react-redux'
 import { BackTop } from 'antd'
 
@@ -21,6 +22,7 @@ class App extends Component {
             <div className="pages-content">
               <Switch>
                 <Route path="/home" component={Home} />
+                <Route path="/editSetting" component={EditSetting} />
                 <Route path="/setting" component={Setting} />
                 <Route path="/otherHomePage" component={OtherHomePage} />
                 <Route path="/publish" component={Publish} />
@@ -40,6 +42,6 @@ class App extends Component {
 }
 
 const mapStateToProps = state => {
-  return { loadingFlag: state.loadingFlag }
+  return { loadingFlag: state.loadingFlag, isLogin: state.isLogin }
 }
 export default connect(mapStateToProps)(App)

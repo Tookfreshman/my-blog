@@ -26,6 +26,12 @@ class OtherHomePage extends Component {
   }
 
   componentDidMount() {
+    this.queryUserBriefByUserId()
+    this.queryIsFocus()
+    this.queryFansAndFocusByuserId()
+  }
+
+  queryUserBriefByUserId() {
     let userId = getUrlParam('userId')
     getUserBriefByUserId({ userId })
       .then(res => {
@@ -38,8 +44,6 @@ class OtherHomePage extends Component {
       .catch(error => {
         console.log(error)
       })
-    this.queryIsFocus()
-    this.queryFansAndFocusByuserId()
   }
 
   queryIsFocus() {
@@ -144,14 +148,14 @@ class OtherHomePage extends Component {
                 <div className="follow">
                   <Button
                     type="primary"
-                    onClick={this.focus}
+                    onClick={() => this.focus()}
                     style={{ display: isFollowed ? 'none' : 'block' }}
                   >
                     关注
                   </Button>
                   <Button
                     type="primary"
-                    onClick={this.unfocus}
+                    onClick={() => this.unfocus()}
                     style={{ display: isFollowed ? 'block' : 'none' }}
                   >
                     取消关注
