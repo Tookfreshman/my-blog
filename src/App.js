@@ -8,6 +8,7 @@ import Home from '@/pages/Home/Home'
 import Setting from '@/pages/PersonalSettings/Setting'
 import OtherHomePage from '@/pages/OtherHomePage/OtherHomePage'
 import Publish from '@/pages/Publish/Publish'
+import BlogDetails from '@/pages/BlogDetails/BlogDetails'
 import { connect } from 'react-redux'
 import { BackTop } from 'antd'
 
@@ -24,6 +25,7 @@ class App extends Component {
                 <Route path="/setting" component={Setting} />
                 <Route path="/otherHomePage" component={OtherHomePage} />
                 <Route path="/publish" component={Publish} />
+                <Route path="/blogDetails" component={BlogDetails} />
                 <Redirect from="/*" to="/home" />
               </Switch>
             </div>

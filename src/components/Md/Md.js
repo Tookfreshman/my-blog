@@ -1,23 +1,34 @@
 import './Md.less'
+import './marked.less'
 import React, { Component } from 'react'
 import marked from 'marked'
 import hljs from 'highlight.js'
+// import 'highlight.js/styles/github.css'
+import md5 from 'js-md5'
 
 export default class Md extends Component {
   constructor(props) {
     super(props)
-    this.onContentChange = this.onContentChange.bind(this)
     this.state = {
       articleDetail: {
-        content: ''
+        article: '',
+        articleType: '',
+        author: '',
+        desc: '',
+        publishTime: '',
+        title: ''
       },
-      previewContent: ''
+      previewContent: '',
+      titleNav: [],
+      rendererMD: null
     }
   }
   componentWillMount() {
+    let rendererMD = new marked.Renderer()
+    let nav = []
     // marked相关配置
     marked.setOptions({
-      renderer: new marked.Renderer(),
+      renderer: rendererMD,
       gfm: true,
       tables: true,
       breaks: true,
@@ -25,28 +36,44 @@ export default class Md extends Component {
       sanitize: true,
       smartLists: true,
       smartypants: false,
-      highlight: function(code) {
+      highlight: code => {
         return hljs.highlightAuto(code).value
       }
     })
-  }
-
-  onContentChange(e) {
-    console.log(marked(e.target.innerText, { breaks: true }))
+    rendererMD.heading = (text, level) => {
+      let escapedText = text.toLowerCase().replace(/[^\w]+/g, '-')
+      // nav.push(text)
+      let title = md5(text)
+      return `<h${level} id='${title}'><a name="${escapedText}" class="anchor" href="#${title}"><span class="header-link"></span></a>${text}</h${level}>`
+    }
     this.setState({
-      previewContent: marked(e.target.innerText, { breaks: true })
+      rendererMD: rendererMD,
+      titleNav: nav
+    })
+  }
+  componentWillReceiveProps = nextProps => {
+    this.setState({
+      articleDetail: nextProps.article,
+      previewContent: marked(nextProps.article.article, {
+        renderer: this.state.rendererMD
+      })
     })
   }
   render() {
+    const state = this.state
     return (
       <div className="md-wrapper">
+        <div className="article-desc">
+          <h1 className="article-title">{state.articleDetail.title}</h1>
+          <p className="sketch">
+            <strong>简述：{state.articleDetail.desc}</strong>
+          </p>
+          <p className="author">
+            <strong>作者：{state.articleDetail.author}</strong>
+          </p>
+        </div>
         <div
-          className="edit-content"
-          contentEditable="plaintext-only"
-          onInput={this.onContentChange}
-        />
-        <div
-          className="article-detail"
+          className="article-detail markdown-body"
           id="content"
           dangerouslySetInnerHTML={{
             __html: this.state.previewContent
