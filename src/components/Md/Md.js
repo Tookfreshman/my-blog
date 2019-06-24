@@ -52,9 +52,13 @@ export default class Md extends Component {
     })
   }
   componentWillReceiveProps = nextProps => {
+    let art
+    if (nextProps.article.article) {
+      art = nextProps.article.article
+    }
     this.setState({
       articleDetail: nextProps.article,
-      previewContent: marked(nextProps.article.article, {
+      previewContent: marked(art, {
         renderer: this.state.rendererMD
       })
     })

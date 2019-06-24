@@ -27,9 +27,9 @@ function getMKTitles(mkContent) {
     })
 
   // 去掉title
-  if (nav[0].level === 1) {
-    nav.shift()
-  }
+  // if (nav[0].level === 1) {
+  //   nav.shift()
+  // }
 
   var index = 0
   nav = nav.map(item => {
