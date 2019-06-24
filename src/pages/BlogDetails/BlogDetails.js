@@ -123,9 +123,6 @@ class BlogDetails extends Component {
   }
   render() {
     let titles = this.state.MKTitles.nav
-    if (this.state.MKTitles.nav.length > 1) {
-      console.log(this.state.MKTitles.nav)
-    }
     return (
       <div className="details-wrapper">
         <Md article={this.state.article} />
