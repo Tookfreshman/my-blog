@@ -8,6 +8,7 @@ import { WrappedRegisterForm } from '../WrappedRegisterForm/WrappedRegisterForm'
 import WrappedLoginForm from '../WrappedLoginForm/WrappedLoginForm'
 import { connect } from 'react-redux'
 import md5EncryptAgain from '@/utils/md5EncryptAgain'
+import redirect from '@/utils/refreshByRedirect'
 import md5 from 'js-md5'
 
 class CommonHeader extends Component {
@@ -106,6 +107,10 @@ class CommonHeader extends Component {
             isLoggedIn: true,
             userInfo: res.data
           })
+          // redirect()
+          const { pathname, search } = window.location
+          const path = pathname + search
+          this.props.history.push('/middlePage?path=' + path)
         } else {
           message.error(res.msg)
         }

@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom'
 import Loading from '@/components/Loading/Loading'
 import CommonHeader from '@/components/CommonHeader/CommonHeader'
 import CommonFooter from '@/components/CommonFooter/CommonFooter'
+import MiddlePage from '@/components/MiddlePage/MiddlePage'
 import './App.less'
 import Home from '@/pages/Home/Home'
 import Setting from '@/pages/PersonalSettings/Setting'
@@ -15,6 +16,7 @@ import { BackTop } from 'antd'
 
 class App extends Component {
   render() {
+    const { loadingFlag, isLogin } = this.props
     return (
       <div className="App">
         <BrowserRouter>
@@ -28,11 +30,12 @@ class App extends Component {
                 <Route path="/otherHomePage" component={OtherHomePage} />
                 <Route path="/publish" component={Publish} />
                 <Route path="/blogDetails" component={BlogDetails} />
+                <Route path="/middlePage" component={MiddlePage} />
                 <Redirect from="/*" to="/home" />
               </Switch>
             </div>
           </div>
-          {this.props.loadingFlag && <Loading />}
+          {loadingFlag && <Loading />}
           <CommonFooter />
         </BrowserRouter>
         <BackTop>

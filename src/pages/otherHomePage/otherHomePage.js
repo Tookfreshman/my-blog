@@ -1,6 +1,6 @@
 import './OtherHomePage.less'
 import React, { Component } from 'react'
-import { Card, Avatar, Button, message } from 'antd'
+import { Card, Avatar, Button, message, Tabs } from 'antd'
 import CountingBar from '@/components/CountingBar/CountingBar'
 import {
   getUserBriefByUserId,
@@ -9,6 +9,8 @@ import {
   isFocusSomeone,
   findFansAndFocusByuserId
 } from '@/api/userController'
+import { querySomeoneBlogsByUserId } from '@/api/articles'
+import ArticleList from '@/components/ArticleList/ArticleList'
 import getUrlParam from '@/utils/getUrlParam'
 import { connect } from 'react-redux'
 
@@ -21,7 +23,8 @@ class OtherHomePage extends Component {
       userData: {},
       isFollowed: false,
       fansNum: 0,
-      focusNum: 0
+      focusNum: 0,
+      list: []
     }
   }
 
@@ -29,6 +32,27 @@ class OtherHomePage extends Component {
     this.queryUserBriefByUserId()
     this.queryIsFocus()
     this.queryFansAndFocusByuserId()
+    this.queryBlogsByPage()
+  }
+
+  queryBlogsByPage() {
+    let userId = getUrlParam('userId')
+    let params = {
+      userId,
+      pageSize: 10,
+      pageNum: 1
+    }
+    querySomeoneBlogsByUserId(params)
+      .then(res => {
+        if (res.code === '0') {
+          this.setState({
+            list: res.data
+          })
+        }
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   queryUserBriefByUserId() {
@@ -76,7 +100,6 @@ class OtherHomePage extends Component {
             fansNum: res.data.fansNum,
             focusNum: res.data.focusNum
           })
-          console.log(this.state)
         }
       })
       .catch(error => {
@@ -101,6 +124,7 @@ class OtherHomePage extends Component {
           if (res.code === '0') {
             message.success('关注成功')
             this.queryIsFocus()
+            this.queryFansAndFocusByuserId()
           }
         })
         .catch(error => {
@@ -122,6 +146,7 @@ class OtherHomePage extends Component {
           if (res.code === '0') {
             message.success('取消关注成功')
             this.queryIsFocus()
+            this.queryFansAndFocusByuserId()
           }
         })
         .catch(error => {
@@ -131,12 +156,12 @@ class OtherHomePage extends Component {
   }
 
   render() {
+    const { userData, isFollowed, list, fansNum, focusNum } = this.state
     const data = [
-      { name: '他的粉丝', val: this.state.fansNum },
-      { name: '他的关注', val: this.state.focusNum }
+      { name: '他的粉丝', val: fansNum },
+      { name: '他的关注', val: focusNum }
     ]
-    const userData = this.state.userData
-    const isFollowed = this.state.isFollowed
+    const { TabPane } = Tabs
     return (
       <div className="other-homepage-content">
         <div className="other-homepage-left-side">
@@ -164,10 +189,19 @@ class OtherHomePage extends Component {
               </div>
               <div className="user-brief txt-ellipsis">
                 <span className="iconfont icongerenjianjie" />
-                {userData.brief}
+                {userData.brief ? userData.brief : '暂无简介'}
               </div>
             </div>
           </Card>
+          <div className="other-home-page-main-content">
+            <Tabs defaultActiveKey="1">
+              <TabPane tab="他的文章" key="1">
+                <div className="blog-list">
+                  <ArticleList list={list} />
+                </div>
+              </TabPane>
+            </Tabs>
+          </div>
         </div>
         <div className="other-homepage-right-side">
           <CountingBar data={data} border={true} />

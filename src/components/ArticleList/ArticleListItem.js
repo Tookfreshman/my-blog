@@ -3,13 +3,18 @@ import React, { Component } from 'react'
 import { NavLink, withRouter } from 'react-router-dom'
 
 class ArticleListItem extends Component {
-  previewBlogDetails() {
-    this.props.history.push(`/blogDetails?id=${this.props.data._id}`)
+  previewBlogDetails(id) {
+    this.props.history.push(`/blogDetails?id=${id}`)
+  }
+
+  previewOtherHomePage(userId, e) {
+    this.props.history.push(`/otherHomePage?userId=${userId}`)
+    e.stopPropagation()
   }
   render() {
-    const data = this.props.data
+    const { data } = this.props
     return (
-      <li onClick={this.previewBlogDetails.bind(this)}>
+      <li onClick={this.previewBlogDetails.bind(this, data._id)}>
         <div className="list-wrapper">
           <div className="article-img-wrapper">
             <img
@@ -27,40 +32,31 @@ class ArticleListItem extends Component {
               {data.title}
             </h3>
             <div className="target-article-info">
-              <div>
-                <NavLink
-                  to={{
-                    pathname: '/otherHomePage',
-                    search: '?userId=5d0059ff8377ac630c93a4f5'
-                  }}
-                >
-                  <span className="iconfont iconzuozhe" />
-                  <span className="p-5 txt-ellipsis" title={data.author}>
-                    {data.author}
-                  </span>
-                </NavLink>
-              </div>
-              {/* <div>
-                <span className="iconfont iconhuabanfuben" />
-                <span className="p-5 txt-ellipsis" title={data.favor}>
-                  {data.favor}
+              <div
+                onClick={this.previewOtherHomePage.bind(this, data.userId)}
+                style={{ cursor: 'pointer' }}
+                className="txt-ellipsis"
+              >
+                <span className="iconfont iconzuozhe" />
+                <span className="p-5" title={data.author}>
+                  {data.author}
                 </span>
-              </div> */}
-              <div>
+              </div>
+              <div className="txt-ellipsis">
                 <span className="iconfont iconyanjing1" />
-                <span className="p-5 txt-ellipsis" title={data.viewerCount}>
+                <span className="p-5" title={data.viewerCount}>
                   {data.viewerCount}
                 </span>
               </div>
-              <div>
+              <div className="txt-ellipsis">
                 <span className="iconfont iconshijian" />
-                <span className="p-5 txt-ellipsis" title={data.publishTime}>
+                <span className="p-5" title={data.publishTime}>
                   {data.publishTime}
                 </span>
               </div>
-              <div>
+              <div className="txt-ellipsis">
                 <span className="iconfont iconduomeitiicon" />
-                <span className="p-5 txt-ellipsis" title={data.articleType}>
+                <span className="p-5" title={data.articleType}>
                   {data.articleType}
                 </span>
               </div>

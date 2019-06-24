@@ -23,9 +23,11 @@ class BlogForm extends Component {
       if (!err) {
         let author =
           this.props.userInfo.nickName || this.props.userInfo.userName
+        let userId = this.props.userInfo.userId
         const params = {
           ...values,
-          author
+          author,
+          userId
         }
         publishBlog(params)
           .then(res => {

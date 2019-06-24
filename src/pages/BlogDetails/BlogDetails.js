@@ -1,7 +1,7 @@
 import './BlogDetails.less'
 import React, { Component } from 'react'
 import Md from '@/components/Md/Md'
-import { queryBlogsById } from '@/api/articles'
+import { queryBlogsById, addBlogsViewer } from '@/api/articles'
 import getMKTitles from '@/components/Md/getMdTitles'
 import getUrlParam from '@/utils/getUrlParam'
 import md5 from 'js-md5'
@@ -28,6 +28,21 @@ class BlogDetails extends Component {
   componentDidMount() {
     this.getBlogById()
   }
+
+  addViewer() {
+    let params = {
+      id: this.state.article._id
+    }
+    addBlogsViewer(params)
+      .then(res => {
+        if (res.code === '0') {
+        }
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
+
   getBlogById() {
     queryBlogsById({
       id: getUrlParam('id')
@@ -38,6 +53,7 @@ class BlogDetails extends Component {
             article: res.data,
             MKTitles: getMKTitles(res.data.article)
           })
+          this.addViewer()
         } else {
         }
       })
