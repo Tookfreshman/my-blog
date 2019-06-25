@@ -1,6 +1,6 @@
 import './ArticleList.less'
 import React, { Component } from 'react'
-import { NavLink, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 
 class ArticleListItem extends Component {
   previewBlogDetails(id) {
@@ -8,7 +8,7 @@ class ArticleListItem extends Component {
   }
 
   previewOtherHomePage(userId, e) {
-    this.props.history.push(`/otherHomePage?userId=${userId}`)
+    this.props.history.push(`/otherHomePage?id=${userId}`)
     e.stopPropagation()
   }
   render() {
@@ -17,11 +17,15 @@ class ArticleListItem extends Component {
       <li onClick={this.previewBlogDetails.bind(this, data._id)}>
         <div className="list-wrapper">
           <div className="article-img-wrapper">
-            <img
-              src={require('../../assets/sprites.jpg')}
-              alt="error"
-              className="article-img"
-            />
+            {data.blogImgUrl ? (
+              <img src={data.blogImgUrl} alt="error" className="article-img" />
+            ) : (
+              <img
+                src={require('../../assets/placeholder.jpg')}
+                alt="error"
+                className="article-img"
+              />
+            )}
           </div>
           <div className="article-info">
             <h3

@@ -7,7 +7,7 @@ import {
   focusSomeone,
   unfocusSomeone,
   isFocusSomeone,
-  findFansAndFocusByuserId
+  findFansAndFocusByUserId
 } from '@/api/userController'
 import { querySomeoneBlogsByUserId } from '@/api/articles'
 import ArticleList from '@/components/ArticleList/ArticleList'
@@ -36,7 +36,7 @@ class OtherHomePage extends Component {
   }
 
   queryBlogsByPage() {
-    let userId = getUrlParam('userId')
+    let userId = getUrlParam('id')
     let params = {
       userId,
       pageSize: 10,
@@ -56,7 +56,7 @@ class OtherHomePage extends Component {
   }
 
   queryUserBriefByUserId() {
-    let userId = getUrlParam('userId')
+    let userId = getUrlParam('id')
     getUserBriefByUserId({ userId })
       .then(res => {
         if (res.code === '0') {
@@ -71,7 +71,7 @@ class OtherHomePage extends Component {
   }
 
   queryIsFocus() {
-    let userId = getUrlParam('userId')
+    let userId = getUrlParam('id')
     isFocusSomeone({ targetUserId: userId })
       .then(res => {
         if (res.code === '0') {
@@ -92,8 +92,8 @@ class OtherHomePage extends Component {
   }
 
   queryFansAndFocusByuserId() {
-    let userId = getUrlParam('userId')
-    findFansAndFocusByuserId({ userId })
+    let userId = getUrlParam('id')
+    findFansAndFocusByUserId({ userId })
       .then(res => {
         if (res.code === '0') {
           this.setState({
@@ -111,7 +111,7 @@ class OtherHomePage extends Component {
     if (!this.props.isLogin) {
       message.warn('请先登录')
     } else {
-      let userId = getUrlParam('userId')
+      let userId = getUrlParam('id')
       if (userId === this.props.userInfo.userId) {
         message.error('不能关注自己')
         return
@@ -137,7 +137,7 @@ class OtherHomePage extends Component {
     if (!this.props.isLogin) {
       message.warn('请先登录')
     } else {
-      let userId = getUrlParam('userId')
+      let userId = getUrlParam('id')
       let data = {
         focus: userId
       }

@@ -3,12 +3,12 @@ import React, { Component } from 'react'
 import { NavLink, withRouter } from 'react-router-dom'
 import { Popover, Modal, message, Avatar } from 'antd'
 import { register, login, logout, getCurrentUser } from '@/api/userController'
+import { getAuthentication } from '@/api/authenticationController'
 import { updateViewerCount } from '@/api/countController'
 import { WrappedRegisterForm } from '../WrappedRegisterForm/WrappedRegisterForm'
 import WrappedLoginForm from '../WrappedLoginForm/WrappedLoginForm'
 import { connect } from 'react-redux'
 import md5EncryptAgain from '@/utils/md5EncryptAgain'
-import redirect from '@/utils/refreshByRedirect'
 import md5 from 'js-md5'
 
 class CommonHeader extends Component {
@@ -23,6 +23,7 @@ class CommonHeader extends Component {
     this.resetLoginForm = this.resetLoginForm.bind(this)
     this.resetRegisterForm = this.resetRegisterForm.bind(this)
     this.handleLoginOut = this.handleLoginOut.bind(this)
+    this.publishBlogs = this.publishBlogs.bind(this)
     this.state = {
       isLoggedIn: false,
       showLoginAlert: false,
@@ -31,11 +32,32 @@ class CommonHeader extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
+    this.queryViewerCount()
+    this.queryAuthenticationStatus()
+    this.queryUserInfo()
+  }
+
+  queryViewerCount() {
     updateViewerCount().catch(error => {
       console.log(error)
     })
-    this.queryUserInfo()
+  }
+
+  queryAuthenticationStatus() {
+    getAuthentication()
+      .then(res => {
+        if (res.code === '0') {
+          if (res.data.authentication === 1) {
+            this.props.setStatus(true)
+          } else {
+            this.props.setStatus(false)
+          }
+        }
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   queryUserInfo() {
@@ -90,6 +112,21 @@ class CommonHeader extends Component {
     this.loginForm.validForm()
   }
 
+  refreshByRedirect() {
+    const { pathname, search } = window.location
+    const path = pathname + search
+    this.props.history.push('/middlePage?path=' + path)
+  }
+
+  publishBlogs() {
+    const { authentication } = this.props
+    if (authentication) {
+      this.props.history.push('/publish')
+    } else {
+      this.props.history.push('/editSetting')
+    }
+  }
+
   handleLoginSubmit(obj) {
     this.props.setFlag()
     let encryptData = md5EncryptAgain(md5(obj.password).toLocaleUpperCase())
@@ -107,10 +144,8 @@ class CommonHeader extends Component {
             isLoggedIn: true,
             userInfo: res.data
           })
-          // redirect()
-          const { pathname, search } = window.location
-          const path = pathname + search
-          this.props.history.push('/middlePage?path=' + path)
+          this.queryAuthenticationStatus()
+          this.refreshByRedirect()
         } else {
           message.error(res.msg)
         }
@@ -173,8 +208,7 @@ class CommonHeader extends Component {
     })
   }
   render() {
-    const isLoggedIn = this.state.isLoggedIn
-    const userInfo = this.state.userInfo
+    const { isLoggedIn, userInfo } = this.state
     const navContent = (
       <ul className="avatar-dropdown">
         <NavLink to="/setting/view">
@@ -205,12 +239,14 @@ class CommonHeader extends Component {
           </nav>
           {isLoggedIn ? (
             <div className="userinfo">
-              <NavLink to="/publish">
-                <div className="pulish-blog">
-                  <i className="iconfont iconxiepinglun" />
-                  <span>写博客</span>
-                </div>
-              </NavLink>
+              <div
+                className="pulish-blog"
+                style={{ cursor: 'pointer' }}
+                onClick={() => this.publishBlogs()}
+              >
+                <i className="iconfont iconxiepinglun" />
+                <span>写博客</span>
+              </div>
               <div className="notice-ring">
                 <span className="iconfont iconlingdang" />
                 <span className="notice-num">12</span>
@@ -287,7 +323,11 @@ class CommonHeader extends Component {
 }
 
 const mapStateToProps = state => {
-  return { loadingFlag: state.loadingFlag, userInfo: state.userInfo }
+  return {
+    loadingFlag: state.loadingFlag,
+    userInfo: state.userInfo,
+    authentication: state.authentication
+  }
 }
 
 const mapDispatchToProps = dispatch => {
@@ -326,6 +366,12 @@ const mapDispatchToProps = dispatch => {
     logOut: () => {
       dispatch({
         type: 'LOGOUT'
+      })
+    },
+    setStatus: data => {
+      dispatch({
+        type: 'SETSTATUS',
+        data: data
       })
     }
   }

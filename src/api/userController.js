@@ -40,8 +40,12 @@ export const isFocusSomeone = params =>
   axios.get(`${UP}/isFocusSomeone`, params)
 
 // 根据userId查询当前用户的粉丝和关注的人
-export const findFansAndFocusByuserId = params =>
-  axios.get(`${UP}/source-open/findFansAndFocusByuserId`, params)
+export const findFansAndFocusByUserId = params =>
+  axios.get(`${UP}/source-open/findFansAndFocusByUserId`, params)
+
+// 根据userId查询当前用户所有的关注信息
+export const findFocusDataByUserId = params =>
+  axios.get(`${UP}/findFocusDataByUserId`, params)
 
 // 查询昵称是否可用
 export const nickNameIsExistence = params =>

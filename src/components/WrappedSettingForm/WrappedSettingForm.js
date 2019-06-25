@@ -183,6 +183,7 @@ class SettingForm extends Component {
       if (!err) {
         const fileData = this.state.fileData
         const userId = this.props.userInfo.userId
+        const userName = this.props.userInfo.userName
         const bornDate = form.getFieldValue('bornDate')
           ? form.getFieldValue('bornDate').format('YYYY-MM-DD')
           : ''
@@ -194,7 +195,8 @@ class SettingForm extends Component {
           region,
           bornDate,
           ...fileData,
-          userId
+          userId,
+          userName
         }
         if (this.state.nickNameDisabled) {
           params.isNew = false

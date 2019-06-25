@@ -16,7 +16,7 @@ import { BackTop } from 'antd'
 
 class App extends Component {
   render() {
-    const { loadingFlag, isLogin } = this.props
+    const { loadingFlag } = this.props
     return (
       <div className="App">
         <BrowserRouter>
