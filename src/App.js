@@ -1,18 +1,55 @@
 import React, { Component } from 'react'
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom'
+import Loadable from 'react-loadable'
 import Loading from '@/components/Loading/Loading'
-import CommonHeader from '@/components/CommonHeader/CommonHeader'
-import CommonFooter from '@/components/CommonFooter/CommonFooter'
-import MiddlePage from '@/components/MiddlePage/MiddlePage'
 import './App.less'
-import Home from '@/pages/Home/Home'
-import Setting from '@/pages/PersonalSettings/Setting'
-import OtherHomePage from '@/pages/OtherHomePage/OtherHomePage'
-import Publish from '@/pages/Publish/Publish'
-import EditSetting from '@/pages/EditSetting/EditSetting'
-import BlogDetails from '@/pages/BlogDetails/BlogDetails'
 import { connect } from 'react-redux'
 import { BackTop } from 'antd'
+
+const CommonHeader = Loadable({
+  loader: () => import('@/components/CommonHeader/CommonHeader'),
+  loading: Loading
+})
+
+const CommonFooter = Loadable({
+  loader: () => import('@/components/CommonFooter/CommonFooter'),
+  loading: Loading
+})
+
+const MiddlePage = Loadable({
+  loader: () => import('@/components/MiddlePage/MiddlePage'),
+  loading: Loading
+})
+
+const Home = Loadable({
+  loader: () => import('@/pages/Home/Home'),
+  loading: Loading
+})
+
+const Setting = Loadable({
+  loader: () => import('@/pages/PersonalSettings/Setting'),
+  loading: Loading
+})
+
+const OtherHomePage = Loadable({
+  loader: () => import('@/pages/OtherHomePage/OtherHomePage'),
+  loading: Loading
+})
+
+const Publish = Loadable({
+  loader: () => import('@/pages/Publish/Publish'),
+  loading: Loading
+})
+
+const EditSetting = Loadable({
+  loader: () => import('@/pages/EditSetting/EditSetting'),
+  loading: Loading
+})
+
+const BlogDetails = Loadable({
+  loader: () => import('@/pages/BlogDetails/BlogDetails'),
+  loading: Loading
+})
 
 class App extends Component {
   render() {

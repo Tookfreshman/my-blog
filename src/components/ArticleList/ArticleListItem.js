@@ -65,7 +65,7 @@ class ArticleListItem extends Component {
                 </span>
               </div>
             </div>
-            <p className="article-brief">{data.article}</p>
+            <p className="article-brief">{data.desc}</p>
           </div>
         </div>
       </li>

@@ -11,7 +11,7 @@ if (process.env.NODE_ENV === 'development') {
   baseURL = 'https://api-test.ca-b2b.com'
 } else {
   // 线上环境api接口
-  baseURL = 'https://gateway.ca-b2b.com'
+  baseURL = 'http://132.232.222.116/api'
 }
 axios.defaults.baseURL = baseURL
 axios.defaults.headers.post['Content-Type'] =

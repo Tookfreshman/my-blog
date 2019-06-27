@@ -9,9 +9,9 @@ class ArticleList extends Component {
     list.forEach(item => {
       item.publishTime = moment(item.publishTime).format('YYYY-MM-DD')
       item.articleType =
-        item.articleType === 1
+        item.articleType === '1'
           ? '技术类'
-          : item.articleType === 2
+          : item.articleType === '2'
           ? '个人日记'
           : '心情'
     })
