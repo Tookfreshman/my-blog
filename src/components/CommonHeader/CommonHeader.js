@@ -228,7 +228,7 @@ class CommonHeader extends Component {
     return (
       <header className="common-header">
         <div className="common-header-inner">
-          <div className="blog-name">图克的博客</div>
+          <div className="blog-name">图克博客</div>
           <nav className="nav">
             <NavLink to="/home" className="nav-item">
               首页
@@ -255,7 +255,7 @@ class CommonHeader extends Component {
                 <Popover
                   placement="bottom"
                   content={navContent}
-                  trigger="click"
+                  trigger="hover"
                 >
                   <Avatar
                     shape="square"

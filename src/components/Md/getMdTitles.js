@@ -20,7 +20,7 @@ function getMKTitles(mkContent) {
         level: level,
         children: []
       })
-      if (navLevel.indexOf(level) === -1 && level !== 1) {
+      if (navLevel.indexOf(level) === -1) {
         // =1 为标题
         navLevel.push(level)
       }
